@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: "Source Sans 3", sans-serif;
+}
+
+.container-pad {
+  @apply mx-auto w-full max-w-6xl px-6;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition;
+}
+
+.btn-primary {
+  @apply bg-ink text-mist hover:bg-slate-900;
+}
+
+.btn-secondary {
+  @apply border border-ink/20 text-ink hover:bg-ink hover:text-mist;
+}
+
+.card {
+  @apply rounded-3xl bg-white p-6 shadow-lg shadow-slate-200/60;
+}
+
+.input {
+  @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-river/40;
+}
+
+.label {
+  @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+}
+
+.section-title {
+  @apply font-display text-3xl font-semibold text-ink;
+}
+
+.kicker {
+  @apply text-sm font-semibold uppercase tracking-widest text-moss;
+}
+
+.gradient-panel {
+  @apply rounded-[32px] bg-hero-pattern px-8 py-10;
+}
