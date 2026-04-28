@@ -12,23 +12,23 @@ Este proyecto incluye un backend en Django (API REST) y un frontend en React con
 1. Crear entorno virtual e instalar dependencias:
 
 ```bash
-python -m venv .venv
+cd backend
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r backend/requirements.txt
 ```
 
 2. Migraciones y superusuario:
 
 ```bash
-python backend/manage.py makemigrations
-python backend/manage.py migrate
-python backend/manage.py createsuperuser
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
 ```
 
 3. Iniciar servidor:
 
 ```bash
-python backend/manage.py runserver
+python manage.py runserver
 ```
 
 ### Endpoints principales
