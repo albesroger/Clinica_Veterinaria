@@ -40,9 +40,23 @@ class PetViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Pet.objects.select_related('owner', 'owner__user').all()
+            qs = Pet.objects.select_related('owner', 'owner__user').all()
+            breed = self.request.query_params.get('breed')
+            species = self.request.query_params.get('species')
+            if breed:
+                qs = qs.filter(breed__icontains=breed)
+            if species:
+                qs = qs.filter(species__iexact=species)
+            return qs
         owner = get_owner_for_user(self.request.user)
-        return Pet.objects.select_related('owner', 'owner__user').filter(owner=owner) if owner else Pet.objects.none()
+        qs = Pet.objects.select_related('owner', 'owner__user').filter(owner=owner) if owner else Pet.objects.none()
+        breed = self.request.query_params.get('breed')
+        species = self.request.query_params.get('species')
+        if breed:
+            qs = qs.filter(breed__icontains=breed)
+        if species:
+            qs = qs.filter(species__iexact=species)
+        return qs
 
     def perform_create(self, serializer):
         if self.request.user.is_staff and self.request.data.get('owner'):
