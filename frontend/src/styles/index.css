@@ -19,11 +19,11 @@ body {
 }
 
 .btn-primary {
-  @apply bg-ink text-mist hover:bg-slate-900;
+  @apply bg-blue-600 text-mist hover:bg-blue-700;
 }
 
 .btn-secondary {
-  @apply border border-ink/20 text-ink hover:bg-ink hover:text-mist;
+  @apply border border-ink/20 text-blue-700 hover:bg-blue-700 hover:text-mist;
 }
 
 .card {
@@ -43,7 +43,7 @@ body {
 }
 
 .kicker {
-  @apply text-sm font-semibold uppercase tracking-widest text-moss;
+  @apply text-sm font-semibold uppercase tracking-widest text-blue-800;
 }
 
 .gradient-panel {

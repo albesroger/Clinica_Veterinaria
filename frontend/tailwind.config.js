@@ -22,7 +22,7 @@ export default {
         glow: '0 0 0 3px rgba(31, 111, 235, 0.25)',
       },
       backgroundImage: {
-        'hero-pattern': 'radial-gradient(circle at top left, rgba(31,111,235,0.25), transparent 45%), radial-gradient(circle at bottom right, rgba(15,118,110,0.25), transparent 45%)',
+        'hero-pattern': 'radial-gradient(circle at top left, rgba(36,111,235,0.25), transparent 45%), radial-gradient(circle at bottom right, rgba(24,118,110,0.25), transparent 45%)',
       },
     },
   },

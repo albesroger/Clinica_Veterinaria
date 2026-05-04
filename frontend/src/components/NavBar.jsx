@@ -11,7 +11,7 @@ export default function NavBar() {
     <header className="sticky top-0 z-30 bg-mist/80 backdrop-blur">
       <div className="container-pad flex items-center justify-between py-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-ink text-mist flex items-center justify-center font-display text-lg">CQ</div>
+          <div className="h-10 w-10 rounded-2xl bg-blue-500 text-mist flex items-center justify-center font-display text-lg">CQ</div>
           <div>
             <p className="font-display text-lg font-semibold">Clinica de Quemado</p>
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">CLÍNICA</p>

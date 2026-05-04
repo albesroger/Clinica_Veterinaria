@@ -2,12 +2,12 @@ import { NavLink } from "react-router-dom";
 
 export default function Home() {
   return (
-    <main>
-      <section className="bg-hero-pattern">
+    <main className="">
+      <section className="bg-blue-200">
         <div className="container-pad grid gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="space-y-6">
             <p className="kicker">Gestión inteligente</p>
-            <h1 className="font-display text-4xl font-semibold text-ink md:text-5xl">
+            <h1 className="font-display text-4xl font-semibold text-slate-800 md:text-5xl">
               Una clínica conectada con cada mascota y su familia
             </h1>
             <p className="text-lg text-slate-600">
@@ -37,17 +37,17 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="gradient-panel">
+          <div className="bg-blue-400 p-6 rounded-3xl">
             <div className="space-y-4">
               <div className="card">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
                   Cita activa
                 </p>
                 <p className="mt-3 text-xl font-semibold">Vacunación de Luna</p>
                 <p className="text-sm text-slate-500">Hoy · 5:30 PM</p>
               </div>
               <div className="card">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
                   Historial clínico
                 </p>
                 <p className="mt-3 text-xl font-semibold">
@@ -68,12 +68,12 @@ export default function Home() {
             <p className="kicker">Todo en un mismo lugar</p>
             <h2 className="section-title">¿Qué puedes hacer en nuestra web?</h2>
           </div>
-          <p className="max-w-xl text-slate-500">
+          <p className="max-w-xl text-slate-600">
             Desde tu registro, hasta la evolución clínica de tus mascotas.
             Organiza cada etapa con trazabilidad y rapidez.
           </p>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid text-slate-700 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
             {
               title: "Tu Información",
@@ -102,27 +102,27 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container-pad pb-20">
-        <div className="grid gap-8 rounded-[32px] bg-ink px-10 py-12 text-mist md:grid-cols-[1.1fr_0.9fr]">
+      <section className="container-pad pb-20 ">
+        <div className="grid gap-8 rounded-[32px] bg-blue-500 px-10 py-12 text-mist md:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-4">
-            <p className="kicker text-dune">Flujo en 3 pasos</p>
+            <p className="text-white font-semibold">Flujo en 3 pasos</p>
             <h2 className="font-display text-3xl font-semibold">
               Del registro al diagnóstico sin fricción
             </h2>
-            <p className="text-slate-200">
+            <p className="text-slate-100">
               Crea tu cuenta, agrega tus mascotas y agenda sus citas en
               segundos. La historia clínica vive conectada a cada visita.
             </p>
             <NavLink
               to="/register"
-              className="btn bg-dune text-ink hover:bg-white"
+              className="btn btn-primary text-ink "
             >
               Empezar ahora
             </NavLink>
           </div>
           <div className="space-y-4">
             {[
-              "1. Registro de clientes y dueños en un perfil unificado.",
+              "1. Registro de clientes y mascotas en un perfil unificado.",
               "2. Alta de mascotas con datos médicos y vacunas.",
               "3. Agenda de citas y actualizaciones clínicas posteriores.",
             ].map((text) => (
