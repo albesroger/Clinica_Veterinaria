@@ -1,11 +1,18 @@
 import { NavLink } from 'react-router-dom'
 import { clearToken, getToken } from '../services/api'
+import { useEffect, useState } from 'react'
 
 const linkClass = ({ isActive }) =>
   `text-sm font-semibold transition ${isActive ? 'text-ink' : 'text-slate-500 hover:text-ink'}`
 
 export default function NavBar() {
-  const token = getToken()
+  const [token, setToken] = useState(getToken())
+
+  useEffect(() => {
+    const handler = () => setToken(getToken())
+    window.addEventListener('authChange', handler)
+    return () => window.removeEventListener('authChange', handler)
+  }, [])
 
   return (
     <header className="sticky top-0 z-30 bg-mist/80 backdrop-blur">

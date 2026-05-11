@@ -2,8 +2,14 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 const AUTH_BASE = import.meta.env.VITE_AUTH_URL || 'http://localhost:8000/api/auth'
 
 export const getToken = () => localStorage.getItem('accessToken')
-export const setToken = (token) => localStorage.setItem('accessToken', token)
-export const clearToken = () => localStorage.removeItem('accessToken')
+export const setToken = (token) => {
+  localStorage.setItem('accessToken', token)
+  try { window.dispatchEvent(new Event('authChange')) } catch (e) { /* noop */ }
+}
+export const clearToken = () => {
+  localStorage.removeItem('accessToken')
+  try { window.dispatchEvent(new Event('authChange')) } catch (e) { /* noop */ }
+}
 
 const buildHeaders = (extra = {}) => {
   const headers = {
