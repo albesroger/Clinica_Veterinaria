@@ -1,6 +1,16 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { getToken } from "../services/api";
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(getToken()));
+
+  useEffect(() => {
+    const handler = () => setIsLoggedIn(Boolean(getToken()));
+    window.addEventListener("authChange", handler);
+    return () => window.removeEventListener("authChange", handler);
+  }, []);
+
   return (
     <main className="">
       <section className="bg-blue-200">
@@ -15,8 +25,11 @@ export default function Home() {
               clínicas con un flujo claro y seguro.
             </p>
             <div className="flex flex-wrap gap-4">
-              <NavLink to="/register" className="btn btn-primary">
-                Crear cuenta
+              <NavLink
+                to={isLoggedIn ? "/appointments" : "/register"}
+                className="btn btn-primary"
+              >
+                {isLoggedIn ? "Agendar" : "Crear cuenta"}
               </NavLink>
               <NavLink to="/dashboard" className="btn btn-secondary">
                 Ver panel
@@ -114,10 +127,10 @@ export default function Home() {
               segundos. La historia clínica vive conectada a cada visita.
             </p>
             <NavLink
-              to="/register"
+              to={isLoggedIn ? "/appointments" : "/register"}
               className="btn btn-primary text-ink "
             >
-              Empezar ahora
+              {isLoggedIn ? "Agendar" : "Empezar ahora"}
             </NavLink>
           </div>
           <div className="space-y-4">
