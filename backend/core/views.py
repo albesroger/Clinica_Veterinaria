@@ -13,14 +13,26 @@ def get_owner_for_user(user):
 
 class IsOwnerOrStaff(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        # Staff users have full access
         if request.user.is_staff:
             return True
+
         owner = get_owner_for_user(request.user)
         if owner is None:
             return False
+
+        # If the object has an `owner` FK (Pet, Appointment, ClinicalHistory)
         if hasattr(obj, 'owner'):
-            return obj.owner_id == owner.id
-        return obj.id == owner.id
+            try:
+                return int(getattr(obj, 'owner_id', None)) == int(owner.id)
+            except Exception:
+                return False
+
+        # If the object is an Owner instance, compare ids
+        try:
+            return int(getattr(obj, 'id', None)) == int(owner.id)
+        except Exception:
+            return False
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
