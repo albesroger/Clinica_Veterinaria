@@ -63,6 +63,13 @@ class AppointmentSerializer(serializers.ModelSerializer):
             'notes',
         ]
 
+    def get_fields(self):
+        fields = super().get_fields()
+        request = self.context.get('request')
+        if request and not request.user.is_staff:
+            fields['status'].read_only = True
+        return fields
+
 
 class ClinicalHistorySerializer(serializers.ModelSerializer):
     owner_id = serializers.IntegerField(source='owner.id', read_only=True)

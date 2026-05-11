@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiGet, apiPost, apiPatch } from "../services/api";
+import { apiGet, apiPost, apiPatch, getCurrentUser } from "../services/api";
 import ConfirmModal from "../components/ConfirmModal";
 
 const initialForm = {
@@ -10,9 +10,17 @@ const initialForm = {
   notes: "",
 };
 
+const appointmentStatusLabels = {
+  scheduled: "Agendada",
+  confirmed: "Confirmada",
+  completed: "Completada",
+  canceled: "Cancelada",
+};
+
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [pets, setPets] = useState([]);
+  const [isStaff, setIsStaff] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,12 +29,14 @@ export default function Appointments() {
 
   const loadAll = async () => {
     try {
-      const [appointmentsData, petsData] = await Promise.all([
+      const [appointmentsData, petsData, userData] = await Promise.all([
         apiGet("/appointments/"),
         apiGet("/pets/"),
+        getCurrentUser(),
       ]);
       setAppointments(appointmentsData);
       setPets(petsData);
+      setIsStaff(Boolean(userData?.is_staff));
     } catch (err) {
       setError(err.message);
     }
@@ -45,10 +55,16 @@ export default function Appointments() {
     setError("");
     setLoading(true);
     try {
-      await apiPost("/appointments/", {
-        ...form,
+      const payload = {
+        scheduled_at: form.scheduled_at,
+        reason: form.reason,
+        notes: form.notes,
         pet: Number(form.pet),
-      });
+      };
+      if (isStaff) {
+        payload.status = form.status;
+      }
+      await apiPost("/appointments/", payload);
       setForm(initialForm);
       loadAll();
     } catch (err) {
@@ -59,7 +75,7 @@ export default function Appointments() {
   };
 
   const handleCancelAppointment = async () => {
-    if (!appointmentToCancel) return;
+    if (!appointmentToCancel || !isStaff) return;
     try {
       setCancelLoading(true);
       setError("");
@@ -97,9 +113,11 @@ export default function Appointments() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="rounded-full bg-clay/10 px-3 py-1 text-xs font-semibold text-clay">
-                    {appointment.status}
+                    {appointmentStatusLabels[appointment.status] ??
+                      appointment.status}
                   </span>
-                  {appointment.status !== "canceled" &&
+                  {isStaff &&
+                    appointment.status !== "canceled" &&
                     appointment.status !== "completed" && (
                       <button
                         onClick={() => setAppointmentToCancel(appointment)}
@@ -166,20 +184,22 @@ export default function Appointments() {
                 required
               />
             </div>
-            <div>
-              <label className="label">Estado</label>
-              <select
-                className="input"
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-              >
-                <option value="scheduled">Agendada</option>
-                <option value="confirmed">Confirmada</option>
-                <option value="completed">Completada</option>
-                <option value="canceled">Cancelada</option>
-              </select>
-            </div>
+            {isStaff && (
+              <div>
+                <label className="label">Estado</label>
+                <select
+                  className="input"
+                  name="status"
+                  value={form.status}
+                  onChange={handleChange}
+                >
+                  <option value="scheduled">Agendada</option>
+                  <option value="confirmed">Confirmada</option>
+                  <option value="completed">Completada</option>
+                  <option value="canceled">Cancelada</option>
+                </select>
+              </div>
+            )}
             <div>
               <label className="label">Notas</label>
               <textarea
