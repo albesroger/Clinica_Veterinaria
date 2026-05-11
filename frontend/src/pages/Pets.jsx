@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiPost, apiDelete } from "../services/api";
+import ConfirmModal from "../components/ConfirmModal";
 
 const initialForm = {
   name: "",
@@ -17,6 +18,8 @@ export default function Pets() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [petToDelete, setPetToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const loadPets = async () => {
     try {
@@ -54,18 +57,18 @@ export default function Pets() {
     }
   };
 
-  const handleDeletePet = async (petId) => {
-    if (
-      !window.confirm("¿Estás seguro de que quieres eliminar esta mascota?")
-    ) {
-      return;
-    }
+  const handleDeletePet = async () => {
+    if (!petToDelete) return;
     try {
+      setDeleteLoading(true);
       setError("");
-      await apiDelete(`/pets/${petId}/`);
+      await apiDelete(`/pets/${petToDelete.id}/`);
       loadPets();
+      setPetToDelete(null);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -96,7 +99,7 @@ export default function Pets() {
                     {pet.owner_name}
                   </span>
                   <button
-                    onClick={() => handleDeletePet(pet.id)}
+                    onClick={() => setPetToDelete(pet)}
                     className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded px-2 py-1 text-sm font-medium transition"
                   >
                     Eliminar
@@ -219,6 +222,21 @@ export default function Pets() {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={Boolean(petToDelete)}
+        title="Eliminar mascota"
+        message={
+          petToDelete
+            ? `Esta acción eliminará a ${petToDelete.name} de tus registros.`
+            : ""
+        }
+        confirmText="Sí, eliminar"
+        cancelText="No, volver"
+        onConfirm={handleDeletePet}
+        onClose={() => setPetToDelete(null)}
+        loading={deleteLoading}
+      />
     </main>
   );
 }

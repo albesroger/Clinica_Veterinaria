@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiPost, apiPatch } from "../services/api";
+import ConfirmModal from "../components/ConfirmModal";
 
 const initialForm = {
   pet: "",
@@ -15,6 +16,8 @@ export default function Appointments() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const loadAll = async () => {
     try {
@@ -55,16 +58,20 @@ export default function Appointments() {
     }
   };
 
-  const handleCancelAppointment = async (appointmentId) => {
-    if (!window.confirm("¿Estás seguro de que quieres cancelar esta cita?")) {
-      return;
-    }
+  const handleCancelAppointment = async () => {
+    if (!appointmentToCancel) return;
     try {
+      setCancelLoading(true);
       setError("");
-      await apiPatch(`/appointments/${appointmentId}/`, { status: "canceled" });
+      await apiPatch(`/appointments/${appointmentToCancel.id}/`, {
+        status: "canceled",
+      });
       loadAll();
+      setAppointmentToCancel(null);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setCancelLoading(false);
     }
   };
 
@@ -95,7 +102,7 @@ export default function Appointments() {
                   {appointment.status !== "canceled" &&
                     appointment.status !== "completed" && (
                       <button
-                        onClick={() => handleCancelAppointment(appointment.id)}
+                        onClick={() => setAppointmentToCancel(appointment)}
                         className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded px-2 py-1 text-sm font-medium transition"
                       >
                         Cancelar
@@ -190,6 +197,21 @@ export default function Appointments() {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={Boolean(appointmentToCancel)}
+        title="Cancelar cita"
+        message={
+          appointmentToCancel
+            ? `Se cancelará la cita de ${appointmentToCancel.pet_name} programada para ${new Date(appointmentToCancel.scheduled_at).toLocaleString()}.`
+            : ""
+        }
+        confirmText="Sí, cancelar"
+        cancelText="No, mantener"
+        onConfirm={handleCancelAppointment}
+        onClose={() => setAppointmentToCancel(null)}
+        loading={cancelLoading}
+      />
     </main>
   );
 }
