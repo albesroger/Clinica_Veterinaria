@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { apiGet, apiPost } from '../services/api'
+import { apiGet, apiPost, apiPatch } from '../services/api'
 
 const initialForm = {
   pet: '',
@@ -55,6 +55,19 @@ export default function Appointments() {
     }
   }
 
+  const handleCancelAppointment = async (appointmentId) => {
+    if (!window.confirm('¿Estás seguro de que quieres cancelar esta cita?')) {
+      return
+    }
+    try {
+      setError('')
+      await apiPatch(`/appointments/${appointmentId}/`, { status: 'canceled' })
+      loadAll()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   return (
     <main className="container-pad py-14">
       <div>
@@ -71,7 +84,17 @@ export default function Appointments() {
                   <h3 className="font-display text-xl font-semibold">{appointment.pet_name}</h3>
                   <p className="text-sm text-slate-500">{new Date(appointment.scheduled_at).toLocaleString()}</p>
                 </div>
-                <span className="rounded-full bg-clay/10 px-3 py-1 text-xs font-semibold text-clay">{appointment.status}</span>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-clay/10 px-3 py-1 text-xs font-semibold text-clay">{appointment.status}</span>
+                  {appointment.status !== 'canceled' && appointment.status !== 'completed' && (
+                    <button
+                      onClick={() => handleCancelAppointment(appointment.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded px-2 py-1 text-sm font-medium transition"
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="mt-3 text-sm text-slate-600">{appointment.reason}</p>
               {appointment.notes && <p className="mt-2 text-sm text-slate-500">{appointment.notes}</p>}

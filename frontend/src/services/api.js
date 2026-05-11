@@ -94,3 +94,29 @@ export const apiPost = async (path, payload) => {
   }
   return data;
 };
+
+export const apiPatch = async (path, payload) => {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "PATCH",
+    headers: buildHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const message = Object.values(data)[0] || "Error al actualizar";
+    throw new Error(message);
+  }
+  return data;
+};
+
+export const apiDelete = async (path) => {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "DELETE",
+    headers: buildHeaders(),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    const message = data.detail || "Error al eliminar";
+    throw new Error(message);
+  }
+};

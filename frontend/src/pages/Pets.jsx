@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { apiGet, apiPost } from '../services/api'
+import { apiGet, apiPost, apiDelete } from '../services/api'
 
 const initialForm = {
   name: '',
@@ -54,6 +54,19 @@ export default function Pets() {
     }
   }
 
+  const handleDeletePet = async (petId) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar esta mascota?')) {
+      return
+    }
+    try {
+      setError('')
+      await apiDelete(`/pets/${petId}/`)
+      loadPets()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   return (
     <main className="container-pad py-14">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -72,7 +85,15 @@ export default function Pets() {
                   <h3 className="font-display text-xl font-semibold">{pet.name}</h3>
                   <p className="text-sm text-slate-500">{pet.species} · {pet.breed || 'Sin raza'} · {pet.sex}</p>
                 </div>
-                <span className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">{pet.owner_name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">{pet.owner_name}</span>
+                  <button
+                    onClick={() => handleDeletePet(pet.id)}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded px-2 py-1 text-sm font-medium transition"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
               <div className="mt-4 grid gap-4 text-sm text-slate-500 md:grid-cols-3">
                 <p>Peso: {pet.weight_kg || 'N/D'} kg</p>
