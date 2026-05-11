@@ -1,14 +1,15 @@
-import { Routes, Route } from 'react-router-dom'
-import NavBar from './components/NavBar'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import Pets from './pages/Pets'
-import Owners from './pages/Owners'
-import Appointments from './pages/Appointments'
-import Histories from './pages/Histories'
+import { Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Pets from "./pages/Pets";
+import Owners from "./pages/Owners";
+import Appointments from "./pages/Appointments";
+import Histories from "./pages/Histories";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -23,8 +24,9 @@ export default function App() {
         <Route path="/owners" element={<Owners />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/histories" element={<Histories />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </div>
-  )
+  );
 }

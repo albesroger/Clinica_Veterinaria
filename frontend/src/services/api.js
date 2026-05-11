@@ -59,6 +59,17 @@ export const register = async (payload) => {
   return data;
 };
 
+export const getCurrentUser = async () => {
+  const res = await fetch(`${AUTH_BASE}/me/`, {
+    headers: buildHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || "No se pudo obtener el usuario");
+  }
+  return data;
+};
+
 export const apiGet = async (path) => {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: buildHeaders(),

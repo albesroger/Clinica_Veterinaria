@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { clearToken, getToken } from "../services/api";
+import { clearToken, getToken, getCurrentUser } from "../services/api";
 import { useEffect, useState } from "react";
 
 const linkClass = ({ isActive }) =>
-  `text-sm font-semibold transition ${isActive ? "text-ink" : "text-slate-500 hover:text-ink"}`;
+  `text-sm font-medium transition ${isActive ? "text-blue-600" : "text-slate-600 hover:text-slate-900"}`;
 
 export default function NavBar() {
   const [token, setToken] = useState(getToken());
+  const [isStaff, setIsStaff] = useState(false);
 
   useEffect(() => {
     const handler = () => setToken(getToken());
@@ -14,60 +15,90 @@ export default function NavBar() {
     return () => window.removeEventListener("authChange", handler);
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token) {
+        try {
+          const user = await getCurrentUser();
+          setIsStaff(user.is_staff);
+        } catch (err) {
+          console.error("Error fetching user:", err);
+        }
+      } else {
+        setIsStaff(false);
+      }
+    };
+    fetchUser();
+  }, [token]);
+
   return (
-    <header className="sticky top-0 z-30 bg-mist/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-slate-200/50 bg-white/80 backdrop-blur-sm">
       <div className="container-pad flex items-center justify-between py-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-blue-500 text-mist flex items-center justify-center font-display text-lg">
+        <NavLink
+          to="/"
+          className="flex items-center gap-2 hover:opacity-80 transition"
+        >
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white flex items-center justify-center font-bold text-sm">
             CQ
           </div>
           <div>
-            <p className="font-display text-lg font-semibold">
-              Clinica de Quemado
-            </p>
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-              CLÍNICA
-            </p>
+            <p className="font-semibold text-slate-900">Clínica de Quemado</p>
+            <p className="text-xs text-slate-500">Sistema veterinario</p>
           </div>
-        </div>
-        <nav className="hidden items-center gap-6 md:flex">
+        </NavLink>
+
+        <nav className="hidden md:flex items-center gap-8">
           <NavLink to="/" className={linkClass}>
             Inicio
           </NavLink>
-          <NavLink to="/dashboard" className={linkClass}>
-            Panel
-          </NavLink>
-          <NavLink to="/owners" className={linkClass}>
-            Dueños
-          </NavLink>
+          {isStaff && (
+            <>
+              <NavLink to="/dashboard" className={linkClass}>
+                Panel
+              </NavLink>
+              <NavLink to="/owners" className={linkClass}>
+                Clientes
+              </NavLink>
+            </>
+          )}
           <NavLink to="/pets" className={linkClass}>
             Mascotas
           </NavLink>
           <NavLink to="/appointments" className={linkClass}>
             Citas
           </NavLink>
-          <NavLink to="/histories" className={linkClass}>
-            Historias
-          </NavLink>
+          {isStaff && (
+            <NavLink to="/histories" className={linkClass}>
+              Historias
+            </NavLink>
+          )}
         </nav>
+
         <div className="flex items-center gap-3">
           {token ? (
-            <button
-              className="btn btn-secondary"
-              onClick={() => {
-                clearToken();
-                window.location.href = "/";
-              }}
-            >
-              Cerrar sesión
-            </button>
+            <>
+              {!isStaff && (
+                <NavLink to="/profile" className="btn btn-ghost">
+                  Perfil
+                </NavLink>
+              )}
+              <button
+                className="btn btn-secondary"
+                onClick={() => {
+                  clearToken();
+                  window.location.href = "/";
+                }}
+              >
+                Salir
+              </button>
+            </>
           ) : (
             <>
-              <NavLink to="/login" className="btn btn-secondary">
+              <NavLink to="/login" className="btn btn-ghost">
                 Entrar
               </NavLink>
               <NavLink to="/register" className="btn btn-primary">
-                Crear cuenta
+                Registrarse
               </NavLink>
             </>
           )}

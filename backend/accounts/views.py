@@ -38,6 +38,7 @@ class CurrentUserView(APIView):
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
+            'is_staff': user.is_staff,
             'owner': owner_data,
         }
         return Response(data)
