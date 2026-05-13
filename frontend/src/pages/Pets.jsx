@@ -9,7 +9,6 @@ const initialForm = {
   sex: "unknown",
   birth_date: "",
   weight_kg: "",
-  microchip_id: "",
   notes: "",
 };
 
@@ -193,15 +192,6 @@ export default function Pets() {
                 step="0.01"
                 name="weight_kg"
                 value={form.weight_kg}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="label">Microchip</label>
-              <input
-                className="input"
-                name="microchip_id"
-                value={form.microchip_id}
                 onChange={handleChange}
               />
             </div>
