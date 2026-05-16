@@ -14,6 +14,8 @@ const initialForm = {
 
 export default function Pets() {
   const [pets, setPets] = useState([]);
+  const [histories, setHistories] = useState([]);
+  const [expandedPetId, setExpandedPetId] = useState(null);
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,8 +24,12 @@ export default function Pets() {
 
   const loadPets = async () => {
     try {
-      const data = await apiGet("/pets/");
-      setPets(data);
+      const [petsData, historiesData] = await Promise.all([
+        apiGet("/pets/"),
+        apiGet("/clinical-histories/"),
+      ]);
+      setPets(petsData);
+      setHistories(historiesData);
     } catch (err) {
       setError(err.message);
     }
@@ -71,6 +77,9 @@ export default function Pets() {
     }
   };
 
+  const getPetHistories = (petId) =>
+    histories.filter((history) => history.pet === petId);
+
   return (
     <main className="container-pad py-14">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -108,8 +117,67 @@ export default function Pets() {
               <div className="mt-4 grid gap-4 text-sm text-slate-500 md:grid-cols-3">
                 <p>Peso: {pet.weight_kg || "N/D"} kg</p>
                 <p>Nacimiento: {pet.birth_date || "N/D"}</p>
-                <p>Microchip: {pet.microchip_id || "N/D"}</p>
               </div>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpandedPetId((current) =>
+                      current === pet.id ? null : pet.id,
+                    )
+                  }
+                  className="rounded-full border border-slate-200 px-3 py-1 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  {expandedPetId === pet.id
+                    ? "Ocultar historia clínica"
+                    : "Ver historia clínica"}
+                </button>
+              </div>
+              {expandedPetId === pet.id && (
+                <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <h4 className="font-display text-lg font-semibold">
+                    Historia clínica
+                  </h4>
+                  <div className="mt-3 space-y-3">
+                    {getPetHistories(pet.id).length > 0 ? (
+                      getPetHistories(pet.id).map((history) => (
+                        <div
+                          key={history.id}
+                          className="rounded-xl bg-white p-3 shadow-sm"
+                        >
+                          <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                            <p className="text-sm font-semibold text-slate-800">
+                              {history.visit_date}
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              {history.vet_name}
+                            </p>
+                          </div>
+                          {history.diagnosis && (
+                            <p className="mt-2 text-sm text-slate-600">
+                              Diagnóstico: {history.diagnosis}
+                            </p>
+                          )}
+                          {history.treatment && (
+                            <p className="mt-2 text-sm text-slate-600">
+                              Tratamiento: {history.treatment}
+                            </p>
+                          )}
+                          {history.notes && (
+                            <p className="mt-2 text-sm text-slate-500">
+                              {history.notes}
+                            </p>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-slate-500">
+                        Esta mascota aún no tiene historia clínica registrada.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
               {pet.notes && (
                 <p className="mt-4 text-sm text-slate-600">{pet.notes}</p>
               )}
