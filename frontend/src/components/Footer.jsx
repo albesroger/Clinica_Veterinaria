@@ -22,7 +22,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-sm text-slate-600">
               <li>Urgencias 24/7</li>
-              <li>contacto@gmail.com</li>
+              <li>clinicaquemadodegüines@gmail.com</li>
             </ul>
           </div>
           <div>
